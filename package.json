@@ -1,0 +1,22 @@
+{
+  "name": "lambo",
+  "productName": "Lambo Command Line",
+  "version": "1.0.0",
+  "description": "Lambo Command Line, specialized for developers",
+  "main": "server.js",
+  "scripts": {
+    "start": "electron .",
+    "package": "electron-packager . --overwrite --asar=true --platform=win32 --arch=x64 --icon=icons/png/64x64.png --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Lambo Command Line\""
+  },
+  "author": "Jonah Perelman <carlperelman1960@gmail.com> (http://mythicalnature.com/)",
+  "license": "MIT",
+  "devDependencies": {
+    "electron-packager": "8.7.2",
+    "electron-prebuilt": "1.4.13"
+  },
+  "dependencies": {
+    "formidable": "1.1.1",
+    "jquery": "3.2.1",
+    "username": "3.0.0"
+  }
+}
