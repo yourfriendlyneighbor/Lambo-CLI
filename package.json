@@ -6,7 +6,7 @@
   "main": "server.js",
   "scripts": {
     "start": "electron .",
-    "package": "electron-packager . --overwrite --asar=true --platform=win32 --arch=x64 --icon=icons/png/64x64.png --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Lambo Command Line\""
+    "dackel": "electron-packager . --overwrite --asar=true --platform=win32 --arch=x64 --icon=icons/png/64x64.png --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Lambo Command Line\""
   },
   "author": "Jonah Perelman <carlperelman1960@gmail.com> (http://mythicalnature.com/)",
   "license": "MIT",

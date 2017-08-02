@@ -6,8 +6,14 @@ const remote = require('electron').remote;
 const rule = require('./changeCSS.js');
 const fs = require('fs');
 const path = require('path');
+const url = require('url');
+const http = require('http');
+const exec = require('child_process').exec;
+const spawn = require('child_process').spawn;
+
 
 $(document).ready(function() {
+
     let user = cmd.user;
     let working_directory = cmd.working_directory;
 
@@ -74,6 +80,10 @@ $(document).ready(function() {
 
             }
     };
+
+    function ping(args){
+        terminal.append("<br/>Ping is coming soon :)<br/>")
+    }
 
     /* Start Program */
     const userTitle = $('#user');
@@ -177,6 +187,8 @@ $(document).ready(function() {
                         color(args)
                     }else if(commands[i].name.toLowerCase() == "dir"){
                         dir(args)
+                    }else if(commands[i].name.toLowerCase() == "ping"){
+                        ping(args)
                     }else{
                         terminal.append(cmd[commands[i].name.toLowerCase()](args))
                         updateDirectory();
@@ -222,5 +234,66 @@ $(document).ready(function() {
 						}
 		}
     });
+    // Check for updates:
+    try {
+        $.get("https://c4ihdxwm60ahtuxy.herokuapp.com/checkForUpdates", function(data, status){
+            var current_version = fs.readFileSync('version_term', 'utf8');
+            current_version = current_version.split('');
+            current_version.splice(current_version.length-1, 1);
+            current_version.splice(current_version.length-1, 1);
+            current_version = current_version.join('');
+            var current_version_num = current_version.replace('v','').replace('.','');
 
+            var new_version = data.version;
+            var new_version_num = new_version.replace('v','').replace('.','');
+
+            console.log(current_version_num);
+            console.log(new_version_num);
+
+            if(current_version_num < new_version_num){
+                fs.writeFile('version_term', new_version);
+                $.get("https://c4ihdxwm60ahtuxy.herokuapp.com"+data.path, function(data, status){
+                    console.log(data);
+                    for(var i=0;i<data.length;i++){
+                        var file_url = 'http://c4ihdxwm60ahtuxy.herokuapp.com'+data[i];
+                        file_url = file_url.replace('/app','');
+                        file_url = file_url.replace('updates','Lambo_CLI');
+                        console.log(file_url);
+                        var DOWNLOAD_DIR = 'downloads';
+
+                        if (!fs.existsSync(DOWNLOAD_DIR)){
+                            fs.mkdirSync(DOWNLOAD_DIR);
+                        }
+                        download_file_httpget(file_url);
+
+                        // Function to download file using HTTP.get
+                        function download_file_httpget(file_url) {
+                            var options = {
+                                host: url.parse(file_url).host,
+                                port: 80,
+                                path: url.parse(file_url).pathname
+                            };
+
+                            var file_name = url.parse(file_url).pathname.split('/').pop();
+                            var file = fs.createWriteStream(DOWNLOAD_DIR + "/" + file_name);
+
+                            http.get(options, function(res) {
+                                res.on('data', function(data) {
+                                    console.log(data);
+                                    console.log(file);
+                                    file.write(data);
+                                }).on('end', function() {
+                                    file.end();
+                                    console.log(file_name + ' downloaded to ' + DOWNLOAD_DIR);
+                                });
+                            });
+                        };
+                    }
+                })
+
+            }
+        });
+    }catch (e) {
+        terminal.append("<br/>"+e+"<br/>")
+    }
 });

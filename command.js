@@ -52,6 +52,10 @@ var commandLine = function(){
         {
             "name": "cd", // Remove directory
             "help": "Changes the current directory. <br /> CD [..]"
+        },
+        {
+            "name": "ping",
+            "help": "Pings a server. <br /> PING [Server]"
         }
     ]
 
